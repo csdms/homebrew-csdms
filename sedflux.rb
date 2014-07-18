@@ -7,8 +7,7 @@ require "formula"
 class Sedflux < Formula
   version "2.1"
   homepage "https://github.com/mcflugen/sedflux"
-  #url "https://github.com/mcflugen/sedflux", :using => :git
-  url "https://csdms.colorado.edu/svn/sedflux/sedflux/trunk", :using => :svn
+  url "https://github.com/mcflugen/sedflux", :using => :git
   sha1 ""
 
   # depends_on "cmake" => :build
@@ -19,9 +18,7 @@ class Sedflux < Formula
   def install
     # ENV.deparallelize  # if your formula fails when building in parallel
 
-    # Remove unrecognized options if warned by configure
-    #system "./configure", "--prefix=#{prefix}"
-    system "cmake", ".", "-DCTEST_USE_LAUNCHERS=ON", *std_cmake_args
+    system "cmake", ".", *std_cmake_args
     system "make", "install" # if this fails, try separate make/make install steps
   end
 
