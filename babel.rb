@@ -19,7 +19,7 @@ class Babel < Formula
 
   def install
     #ENV.deparallelize  # if your formula fails when building in parallel
-    ENV['JNI_INCLUDES'] = "-I/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk/System/Library/Frameworks/JavaVM.framework/Versions/A/Headers"
+    ENV['JAVAPREFIX'] = "/Library/Java/JavaVirtualMachines/jdk1.8.0.jdk/Contents/Home"
     ENV['CC'] = "/usr/local/bin/gcc-4.8"
     ENV['CXX'] = "/usr/local/bin/g++-4.8"
     ENV['FC'] = "/usr/local/bin/gfortran"
