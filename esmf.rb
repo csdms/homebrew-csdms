@@ -6,8 +6,8 @@ require "formula"
 
 class Esmf < Formula
   version "6.3.0"
-  homepage ""
-  url "http://sourceforge.net/projects/esmf/files/ESMF_6_3_0r/ESMF_6_3_0r/esmf_6_3_0r_src.tar.gz"
+  homepage "http://www.earthsystemmodeling.org"
+  url "git://git.code.sf.net/p/esmf/esmf", :branch => 'ESMF_6_3_0rp1'
   sha1 "f459a65373fd5a7925ea935bc75b66283b27936b"
 
   # depends_on "cmake" => :build
