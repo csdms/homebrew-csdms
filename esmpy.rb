@@ -10,6 +10,8 @@ class Esmpy < Formula
   url "git://git.code.sf.net/p/esmf/esmf", :branch => 'ESMF_6_3_0rp1'
   sha1 "f459a65373fd5a7925ea935bc75b66283b27936b"
 
+  option "with-check", "Run tests before installing"
+
   # depends_on "cmake" => :build
   depends_on :x11 # if your formula requires any X11/XQuartz components
   depends_on "esmf"
@@ -24,6 +26,8 @@ class Esmpy < Formula
 
       system "python", "setup.py", "build", "--ESMFMKFILE=" + path_to_esmf_mk,
         "install", "--prefix=#{prefix}"
+
+      system "python", "setup.py", "test_all" if build.with? "check"
     end
   end
 
