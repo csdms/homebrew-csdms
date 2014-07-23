@@ -12,24 +12,21 @@ class Esmf < Formula
 
   # depends_on "cmake" => :build
   depends_on :x11 # if your formula requires any X11/XQuartz components
-  depends_on "gcc"
+  depends_on :fortran
 
   def install
     ENV.deparallelize  # if your formula fails when building in parallel
-    ENV['ESMF_CXX'] = "/usr/local/bin/g++-4.8"
-    ENV['ESMF_F90'] = "/usr/local/bin/gfortran"
+    ENV['ESMF_CXX'] = "#{ENV.cc}"
+    ENV['ESMF_F90'] = "#{ENV.fc}"
     ENV['ESMF_COMM'] = "mpiuni"
     ENV['ESMF_DIR'] = buildpath
     ENV['ESMF_INSTALL_PREFIX'] = prefix
+    ENV['ESMF_COMPILER'] = (File.basename("#{ENV.fc}") +
+                            File.basename("#{ENV.cc}"))
 
-    # Remove unrecognized options if warned by configure
-    #system "./configure", "--disable-debug",
-    #                      "--disable-dependency-tracking",
-    #                      "--disable-silent-rules",
-    #                      "--prefix=#{prefix}"
-    # system "cmake", ".", *std_cmake_args
     system "make"
-    #system "make", "install" # if this fails, try separate make/make install steps
+    system "make check" if build.with? "check"
+    system "make", "install"
   end
 
   test do
