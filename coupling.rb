@@ -14,6 +14,7 @@ class Coupling < Formula
   depends_on :x11 # if your formula requires any X11/XQuartz components
   depends_on :python
   depends_on "scipy" => :python
+  depends_on "esmpy"
   depends_on "netcdf"
 
   def install
