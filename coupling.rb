@@ -10,6 +10,8 @@ class Coupling < Formula
   url "https://github.com/csdms/coupling", :using => :git
   sha1 ""
 
+  option "with-check", "Run tests before installing"
+
   # depends_on "cmake" => :build
   depends_on :x11 # if your formula requires any X11/XQuartz components
   depends_on :python
@@ -19,12 +21,15 @@ class Coupling < Formula
 
   def install
     # ENV.deparallelize  # if your formula fails when building in parallel
-    #ENV['PYTHONPATH'] = "#{prefix}/lib/python2.7/site-packages"
-    ENV["PYTHONPATH"] = lib + "python2.7/site-packages"
-    mkdir_p(lib + "python2.7/site-packages")
+    Language::Python.each_python(build) do |python, version|
+      path_to_site_packages = "#{lib}/python#{version}/site-packages"
+      ENV["PYTHONPATH"] = path_to_site_packages
+      mkdir_p(path_to_site_packages)
 
-    system "pip", "install", "-r", "requirements.txt"
-    system "python", "setup.py", "install", "--prefix=#{prefix}"
+      system "pip", "install", "-r", "requirements.txt"
+      system "nosetests" if build.with? "check"
+      system python, "setup.py", "install", "--prefix=#{prefix}"
+    end
   end
 
   test do
