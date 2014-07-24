@@ -10,38 +10,68 @@ class Coupling < Formula
   url "https://github.com/csdms/coupling", :using => :git
   sha1 ""
 
-  option "with-check", "Run tests before installing"
+  option "without-check", "Skip build-time tests (not recommended)"
 
   # depends_on "cmake" => :build
-  depends_on :x11 # if your formula requires any X11/XQuartz components
   depends_on :python
   depends_on "scipy" => :python
   depends_on "esmpy"
   depends_on "netcdf"
+  depends_on "geos"
+
+  resource 'nose' do
+    url 'https://pypi.python.org/packages/source/n/nose/nose-1.3.3.tar.gz'
+    sha1 'cad94d4c58ce82d35355497a1c869922a603a9a5'
+  end
+
+  resource 'shapely' do
+    url 'https://pypi.python.org/packages/source/S/Shapely/Shapely-1.3.3.tar.gz'
+    sha1 '1d483201b7be0ebabce2d2b6e9f41ddaff7b4181'
+  end
+
+  resource 'netcdf' do
+    url 'https://pypi.python.org/packages/source/n/netCDF4/netCDF4-1.1.0.tar.gz'
+    sha1 '551f64f3f815a3cb0efd4e53d902ea77e763cccf'
+  end
+
+  resource 'pyyaml' do
+    url 'https://pypi.python.org/packages/source/P/PyYAML/PyYAML-3.11.tar.gz'
+    sha1 '1a2d5df8b31124573efb9598ec6d54767f3c4cd4'
+  end
 
   def install
     # ENV.deparallelize  # if your formula fails when building in parallel
-    Language::Python.each_python(build) do |python, version|
-      path_to_site_packages = "#{lib}/python#{version}/site-packages"
-      ENV["PYTHONPATH"] = path_to_site_packages
-      mkdir_p(path_to_site_packages)
+    #ENV['PYTHONPATH'] = lib + "#{python_version}/site-packages"
+    site_packages_suffix = "lib/#{python_version}/site-packages"
+    ENV.prepend_create_path "PYTHONPATH", libexec + site_packages_suffix
+    ENV.prepend_create_path "PYTHONPATH", prefix + site_packages_suffix
 
-      system "pip", "install", "-r", "requirements.txt"
-      system "nosetests" if build.with? "check"
-      system python, "setup.py", "install", "--prefix=#{prefix}"
+    install_args = ["setup.py", "install", "--prefix=#{libexec}"]
+
+    res = %w[nose shapely netcdf pyyaml]
+    res.each do |r|
+      resource(r).stage do
+        system "python", *install_args
+      end
     end
+
+    system "#{libexec}/bin/nosetests" if build.with? "check"
+
+    system "python", "setup.py", "install", "--prefix=#{prefix}"
+
+    rm Dir["#{bin}/nosetests*"]
   end
 
   test do
-    # `test do` will create, run in and delete a temporary directory.
-    #
-    # This test will fail and we won't accept that! It's enough to just replace
-    # "false" with the main program this formula installs, but it'd be nice if you
-    # were more thorough. Run the test with `brew test coupling`. Options passed
-    # to `brew install` such as `--HEAD` also need to be provided to `brew test`.
-    #
-    # The installed folder is not in the path, so use the entire path to any
-    # executables being tested: `system "#{bin}/program", "do", "something"`.
-    system "false"
+    system "python", "-c", "import cmt"
   end
+
+  def python_version
+    "python" + `python -c 'import sys; print(sys.version[:3])'`.strip
+  end
+
+  def package_installed? python, module_name
+    quiet_system python, "-c", "import #{module_name}"
+  end
+
 end
