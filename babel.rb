@@ -15,21 +15,19 @@ class Babel < Formula
   depends_on "libxml2"
   depends_on "chasm"
   depends_on "gcc"
+  #depends_on "homebrew/versions/gcc48"
   depends_on "homebrew/python/scipy"
 
   def install
     #ENV.deparallelize  # if your formula fails when building in parallel
     ENV['JAVAPREFIX'] = "/Library/Java/JavaVirtualMachines/jdk1.8.0.jdk/Contents/Home"
-    ENV['CC'] = "/usr/local/bin/gcc-4.8"
-    ENV['CXX'] = "/usr/local/bin/g++-4.8"
-    ENV['FC'] = "/usr/local/bin/gfortran"
-    ENV['F77'] = "/usr/local/bin/gfortran"
-    #ENV['CFLAGS'] = "-fPIC"
+    ENV['CC'] = "gcc-4.8"
+    ENV['CXX'] = "g++-4.8"
+    ENV['FC'] = "gfortran"
+    ENV['F77'] = "gfortran"
 
-    # Remove unrecognized options if warned by configure
-    system "./configure", "--prefix=#{prefix}"#, "--disable-python"
+    system "./configure", "--prefix=#{prefix}", "--disable-documentation"
 
-    # system "cmake", ".", *std_cmake_args
     system "make"
     system "make", "install"
   end
