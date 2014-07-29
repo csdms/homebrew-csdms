@@ -1,9 +1,5 @@
 require "formula"
 
-# Documentation: https://github.com/Homebrew/homebrew/wiki/Formula-Cookbook
-#                /usr/local/Library/Contributions/example-formula.rb
-# PLEASE REMOVE ALL GENERATED COMMENTS BEFORE SUBMITTING YOUR PULL REQUEST!
-
 class Ccaffeine < Formula
   homepage "http://www.cca-forum.org"
   url "http://www.cca-forum.org/download/cca-tools/cca-tools-latest/ccaffeine-0.8.8.tar.gz"
@@ -21,7 +17,7 @@ class Ccaffeine < Formula
   patch :DATA
 
   def install
-    ENV.deparallelize  # if your formula fails when building in parallel
+    ENV.deparallelize
     ENV['CC'] = "cc"
     ENV['CXX'] = "c++"
 
@@ -39,7 +35,7 @@ class Ccaffeine < Formula
   end
 
   test do
-    system "ccafe-config"
+    system "#{bin}/ccafe-config", "--version"
   end
 end
 
