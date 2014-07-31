@@ -1,9 +1,8 @@
 require "formula"
 
 class Cmi < Formula
-  version "0.1"
   homepage "http://csdms.colorado.edu"
-  url "https://github.com/csdms/cmi", :using => :git
+  head "https://github.com/csdms/cmi.git"
   sha1 ""
 
   depends_on :python
