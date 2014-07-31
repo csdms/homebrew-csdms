@@ -6,7 +6,9 @@ class Cmi < Formula
   url "https://github.com/csdms/cmi", :using => :git
   sha1 ""
 
+  depends_on :python
   depends_on "babel"
+  depends_on "cca-spec-babel"
   depends_on 'cmake' => :build
   depends_on 'pkg-config' => :build
   depends_on 'bocca' => :build
@@ -20,8 +22,7 @@ class Cmi < Formula
   def install
     ENV.deparallelize
 
-    [
-      %w{child child},
+    [ %w{child child},
       %w{cem deltas},
       %w{plume plume},
       %w{waves waves},
@@ -33,6 +34,8 @@ class Cmi < Formula
       ENV["#{model.upcase}_LDFLAGS"] = %x[pkg-config --libs #{pkg}].chomp
     end
 
+    ENV.prepend_path 'PYTHONPATH', Formula['boccatools'].lib + "#{python_version}/site-packages"
+
     system "cmake", ".", *std_cmake_args
     system "make", "just_hydrotrend"
     system "cd csdms && ./configure --prefix=#{prefix}"
@@ -40,16 +43,14 @@ class Cmi < Formula
     system "cd csdms && make install"
 
     inreplace Dir["#{share}/cca/*cca"], /\.la/, ".dylib"
+
+    (bin + 'cmi-env').write env_script
   end
 
   test do
-    ENV['SIDL_DLL_PATH'] = "#{HOMEBREW_PREFIX}/share/cca"
-    ENV.prepend_path 'PYTHONPATH', "#{HOMEBREW_PREFIX}/lib/#{python_version}/site-packages"
-    ENV.prepend_path 'PYTHONPATH', "#{HOMEBREW_PREFIX}/lib/cca-spec-babel-0_8_6-babel-1.4.0/#{python_version}/site-packages"
-
-    ENV['LD_RUN_PATH'] = lib
-    ENV['LD_LIBRARY_PATH'] = lib
-    system "python", "-c", "from csdms.model.Child import Child; Child()"
+    %w[Child Hydrotrend Sedflux2d Sedflux3d].each do |component|
+      system "eval $(#{bin}/cmi-env) && python -c 'from csdms.model.#{component} import #{component}; #{component}()'"
+    end
   end
 
   def python_version
@@ -57,9 +58,31 @@ class Cmi < Formula
   end
 
   def caveats; <<-EOS.undent
-    Set the PYTHONPATH environment variable:
-      export SIDL_DLL_PATH=#{HOMEBREW_PREFIX}/share/cca
-      export PYTHONPATH=#{HOMEBREW_PREFIX}/lib/#{python_version}/site-packages
+    To set up your environment:
+        eval $(cmi-env)
     EOS
+  end
+
+  def env_script
+    cca_spec_lib = %x[cca-spec-babel-config --var CCASPEC_BABEL_LIBS].chomp
+    babel_lib = Formula['babel'].lib
+    site_packages = "#{python_version}/site-packages"
+
+    ENV['SIDL_DLL_PATH'] = "#{share}/cca"
+    ENV['PYTHONPATH'] = [
+      "#{lib}/#{site_packages}",
+      "#{cca_spec_lib}/#{site_packages}",
+      "#{babel_lib}/#{site_packages}"
+    ].join(':')
+    ENV['LD_LIBRARY_PATH'] = ENV['LD_RUN_PATH'] = lib
+
+    vars = %w[SIDL_DLL_PATH PYTHONPATH LD_RUN_PATH LD_LIBRARY_PATH]
+
+    contents = "#!/usr/bin/env bash\n"
+    vars.each do |var|
+      contents << "echo export #{var}='#{ENV[var]}';\n"
+    end
+
+    return contents
   end
 end
