@@ -10,18 +10,18 @@ class Babel < Formula
 
   depends_on :java
   depends_on :python
+  depends_on :fortran
   depends_on "libxml2"
   depends_on "chasm"
-  depends_on "gcc"
 
   def install
     ENV['JAVAPREFIX'] = "#{`/usr/libexec/java_home`.chomp}"
 
-    ENV['CC'] = "cc"
-    ENV['CXX'] = "c++"
-    ENV['FC'] = "gfortran"
-    ENV['F77'] = "gfortran"
-    ENV['CFLAGS'] = "-std=gnu89"
+    ENV['CC'] = '/usr/bin/clang'
+    ENV['CXX'] = '/usr/bin/clang++'
+    ENV['F77'] = ENV['F90'] = ENV['F03'] = ENV['FC']
+    ENV['JAVA'] = ENV['JAVAPREFIX'] + '/bin/java'
+    ENV.append 'CFLAGS', "-std=gnu89"
 
     system "./configure", "--prefix=#{prefix}", "--disable-documentation"
 
