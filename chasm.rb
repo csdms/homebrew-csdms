@@ -6,12 +6,15 @@ class Chasm < Formula
   url "http://sourceforge.net/projects/chasm-interop/files/chasm_1.4.RC3.tar.gz"
   sha1 "e592f6684d5f79c24e3751f2377fd0558f93fb42"
 
-  depends_on "gcc"
+  depends_on :fortran
 
   def install
-    system "./configure", "--with-F90=gfortran",
-                          "--with-F90-vendor=GNU",
-                          "--prefix=#{prefix}/"
+    f90 = ENV['FC']
+    f90_vendor = 'GNU'
+
+    system "./configure", "--with-F90=#{f90}",
+                          "--with-F90-vendor=#{f90_vendor}",
+                          "--prefix=#{prefix}"
 
     system "make", "all"
     system "make", "install-dirs"
