@@ -20,10 +20,17 @@ class Cmi < Formula
   def install
     ENV.deparallelize
 
-    models = %w{child cem plume waves hydrotrend sedflux2d sedflux3d}
-    models.each do |model|
-      ENV["#{model.upcase}_CPPFLAGS"] = %x[pkg-config --cflags #{model}].chomp
-      ENV["#{model.upcase}_LDFLAGS"] = %x[pkg-config --libs #{model}].chomp
+    [
+      %w{child child},
+      %w{cem deltas},
+      %w{plume plume},
+      %w{waves waves},
+      %w{hydrotrend hydrotrend},
+      %w{sedflux2d sedflux2d},
+      %w{sedflux3d sedflux3d},
+    ].each do |model, pkg|
+      ENV["#{model.upcase}_CPPFLAGS"] = %x[pkg-config --cflags #{pkg}].chomp
+      ENV["#{model.upcase}_LDFLAGS"] = %x[pkg-config --libs #{pkg}].chomp
     end
 
     system "cmake", ".", *std_cmake_args
@@ -31,11 +38,15 @@ class Cmi < Formula
     system "cd csdms && ./configure --prefix=#{prefix}"
     system "cd csdms && make"
     system "cd csdms && make install"
+
+    inreplace Dir["#{share}/cca/*cca"], /\.la/, ".dylib"
   end
 
   test do
     ENV['SIDL_DLL_PATH'] = "#{HOMEBREW_PREFIX}/share/cca"
-    ENV['PYTHONPATH'] = prefix + "lib/#{python_version}/site-packages"
+    ENV.prepend_path 'PYTHONPATH', "#{HOMEBREW_PREFIX}/lib/#{python_version}/site-packages"
+    ENV.prepend_path 'PYTHONPATH', "#{HOMEBREW_PREFIX}/lib/cca-spec-babel-0_8_6-babel-1.4.0/#{python_version}/site-packages"
+
     ENV['LD_RUN_PATH'] = lib
     ENV['LD_LIBRARY_PATH'] = lib
     system "python", "-c", "from csdms.model.Child import Child; Child()"
