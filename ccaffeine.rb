@@ -10,6 +10,7 @@ class Ccaffeine < Formula
     sha1 'abf85c8541fd30d16cf1647e0673ee1a89a57eab'
   end
 
+  depends_on :fortran
   depends_on "libxml2"
   depends_on "cca-spec-babel"
   depends_on "babel"
@@ -18,8 +19,6 @@ class Ccaffeine < Formula
 
   def install
     ENV.deparallelize
-    ENV['CC'] = "cc"
-    ENV['CXX'] = "c++"
 
     resource("boost").stage do
       mkdir_p libexec/'include'
@@ -49,7 +48,7 @@ index 36aaa32..a627122 100644
  
  LOCAL_CXXFLAGS= \
 --Dlint=lint \
-+-Dlint=lint -lsidlstub_cxx \
++-Dlint=lint -LHOMEBREW_PREFIX/lib -lsidlstub_cxx \
  $(CXXFLAGS) \
  $(CCAFE_PTHREADS_FLAGS)
  
