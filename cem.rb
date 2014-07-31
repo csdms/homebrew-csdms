@@ -1,17 +1,11 @@
 require "formula"
 
-# Documentation: https://github.com/Homebrew/homebrew/wiki/Formula-Cookbook
-#                /usr/local/Library/Contributions/example-formula.rb
-# PLEASE REMOVE ALL GENERATED COMMENTS BEFORE SUBMITTING YOUR PULL REQUEST!
-
 class Cem < Formula
   version "1.0"
   homepage ""
   url "https://csdms.colorado.edu/svn/cem/trunk", :using => :svn
   sha1 ""
 
-  # depends_on "cmake" => :build
-  depends_on :x11 # if your formula requires any X11/XQuartz components
   depends_on "glib"
   depends_on "cmake" => :build
   depends_on "pkgconfig" => :build
