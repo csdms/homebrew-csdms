@@ -1,4 +1,5 @@
-language: objective-c
+os:
+  - osx
 
 before_install:
   - brew update
@@ -12,4 +13,3 @@ install:
   - brew test sedflux
   - brew install babel
   - brew test babel
-  - $(brew --prefix)/bin/babel-config --dump
