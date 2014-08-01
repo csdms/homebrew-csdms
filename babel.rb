@@ -32,5 +32,11 @@ class Babel < Formula
 
   test do
     system "#{bin}/babel", "--version"
+    system "#{bin}/babel-config", "--query-var=BABEL_SUPPORTED_LANGUAGES"
+
+    langs = %x[babel-config --query-var=BABEL_SUPPORTED_LANGUAGES].split()
+    ['c', 'cxx', 'java', 'python', 'f77', 'f90', 'f03'].each do |lang|
+      assert langs.include?(lang), "babel does not support #{lang}"
+    end
   end
 end
