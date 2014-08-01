@@ -12,11 +12,11 @@ How do I install these formulae?
 --------------------------------
 Just `brew tap csdms/csdms` and then `brew install <formula>`.
 
-If the formula conflicts with one from mxcl/master or another tap, you can `brew install homebrew/csdms/<formula>`.
+If the formula conflicts with one from mxcl/master or another tap, you can `brew install csdms/csdms/<formula>`.
 
 You can also install via URL:
 
-    brew install https://raw.github.com/Homebrew/homebrew-csdms/master/<formula>.rb
+    brew install https://raw.github.com/csdms/homebrew-csdms/master/<formula>.rb
 
 Docs
 ----
