@@ -12,4 +12,4 @@ install:
   - brew test sedflux
   - brew install babel
   - brew test babel
-  - /usr/local/bin/babel-config --dump
+  - $(brew --prefix)/bin/babel-config --dump
