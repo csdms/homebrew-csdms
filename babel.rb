@@ -28,6 +28,9 @@ class Babel < Formula
     system "make"
     system "make check" if build.with? "check"
     system "make", "install"
+
+    rm Dir["#{share}/aclocal/libtool.m4"]
+    rm Dir["#{share}/aclocal/ltdl.m4"]
   end
 
   test do
