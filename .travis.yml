@@ -10,5 +10,5 @@ install:
   - brew tap --repair
   - brew install sedflux --HEAD
   - brew test sedflux
-  - brew install babel --with-check
+  - brew install babel
   - brew test babel
