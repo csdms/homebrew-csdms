@@ -8,5 +8,7 @@ before_install:
 install:
   - brew tap csdms/csdms
   - brew tap --repair
-  - brew install sedflux --HEAD
-  - brew test sedflux
+  - brew install sedflux cem --HEAD
+  - brew test sedflux cem
+  - brew install babel --with-check
+  - brew test babel
