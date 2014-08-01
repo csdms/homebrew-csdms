@@ -1,0 +1,12 @@
+language: objective-c
+
+before_install:
+  - brew update
+  - /usr/bin/which ruby
+  - ruby --version
+
+install:
+  - brew tap csdms/csdms
+  - brew tap --repair
+  - brew install sedflux
+  - brew test sedflux
