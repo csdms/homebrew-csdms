@@ -8,5 +8,5 @@ before_install:
 install:
   - brew tap csdms/csdms
   - brew tap --repair
-  - brew install sedflux
+  - brew install sedflux --HEAD
   - brew test sedflux
