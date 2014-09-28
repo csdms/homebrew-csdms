@@ -18,8 +18,8 @@ class Esmf < Formula
     ENV['ESMF_COMM'] = "mpiuni"
     ENV['ESMF_DIR'] = buildpath
     ENV['ESMF_INSTALL_PREFIX'] = prefix
-    ENV['ESMF_COMPILER'] = (File.basename("#{ENV.fc}") +
-                            File.basename("#{ENV.cc}"))
+    ENV['ESMF_COMPILER'] = File.basename("#{ENV.fc}")
+    ENV['ESMF_COMPILER'] += File.basename("#{ENV.cc}") if OS.mac?
 
     system "make"
     system "make check" if build.with? "check"
