@@ -19,8 +19,8 @@ class Babel < Formula
   def install
     ENV['JAVAPREFIX'] = java_prefix
 
-    ENV['CC'] = ENV.cc
-    ENV['CXX'] = ENV.cxx
+    ENV['CC'] = which_cc
+    ENV['CXX'] = which_cxx
     ENV['F77'] = ENV['F90'] = ENV['F03'] = ENV['FC'] = ENV.fc
     ENV['JAVA'] = which_java
     ENV['PYTHON'] = which_python
@@ -45,6 +45,14 @@ class Babel < Formula
     ['c', 'cxx', 'java', 'python', 'f77', 'f90', 'f03'].each do |lang|
       assert langs.include?(lang), "babel does not support #{lang}"
     end
+  end
+
+  def which_cc
+    return '/usr/bin/clang' if OS.mac? else ENV.cc
+  end
+
+  def which_cxx
+    return '/usr/bin/clang++' if OS.mac? else ENV.cxx
   end
 
   def which_python
