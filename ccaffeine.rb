@@ -10,7 +10,6 @@ class Ccaffeine < Formula
     sha1 'abf85c8541fd30d16cf1647e0673ee1a89a57eab'
   end
 
-  depends_on :fortran
   depends_on "libxml2"
   depends_on "cca-spec-babel"
   depends_on "babel"
