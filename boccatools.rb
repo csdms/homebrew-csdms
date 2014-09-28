@@ -6,10 +6,14 @@ class Boccatools < Formula
   url "https://csdms.colorado.edu/svn/bocca_tools/trunk", :using => :svn
   sha1 ""
 
-  depends_on :python
+  option "with-python=", "Path to a python binary" if OS.linux?
+
+  depends_on :python unless OS.linux?
   depends_on "bocca"
 
   def install
+    ENV.prepend_path 'PATH', File.dirname(which_babel_python)
+
     ENV.prepend_create_path "PYTHONPATH", prefix + "lib/#{python_version}/site-packages"
 
     system "python", "setup.py", "install", "--prefix=#{prefix}",
@@ -17,10 +21,23 @@ class Boccatools < Formula
   end
 
   test do
+    ENV.prepend_path 'PATH', File.dirname(which_babel_python)
     ENV['PYTHONPATH'] = prefix + "lib/#{python_version}/site-packages"
     system "python", "-c", "import bocca"
     system "#{bin}/bocca-build", "-h"
     system "#{bin}/bocca-save", "-h"
+  end
+
+  def which_babel_python
+    python = `babel-config --query-var=WHICH_PYTHON`.strip
+    raise "python not found" unless File.exist? python
+    return python
+  end
+
+  def which_python
+    python = ARGV.value('with-python') || which('python').to_s
+    raise "#{python} not found" unless File.exist? python
+    return python
   end
 
   def python_version
