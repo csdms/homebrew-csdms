@@ -22,7 +22,7 @@ class Babel < Formula
     ENV['CC'] = ENV.cc
     ENV['CXX'] = ENV.cxx
     ENV['F77'] = ENV['F90'] = ENV['F03'] = ENV['FC'] = ENV.fc
-    ENV['JAVA'] = ENV['JAVAPREFIX'] + '/java'
+    ENV['JAVA'] = which_java
     ENV['PYTHON'] = which_python
     ENV.append 'CFLAGS', "-std=gnu89"
 
@@ -54,17 +54,17 @@ class Babel < Formula
   end
 
   def which_java
-    java = ARGV.value('with-java') || which('java').to_s
-    raise "java not found" unless File.exists? java
-    return java
+    if OS.mac? then
+      return  "#{`/usr/libexec/java_home`.chomp}" + '/bin/java'
+    else
+      java = ARGV.value('with-java') || which('java').to_s
+      raise "java not found" unless File.exists? java
+      return java
+    end
   end
 
   def java_prefix
-    if OS.mac? then
-      return  "#{`/usr/libexec/java_home`.chomp}"
-    else
-      return File.dirname(which_java)
-    end
+    return File.dirname(File.dirname(which_java))
   end
 
 end
