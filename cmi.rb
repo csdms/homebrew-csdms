@@ -5,7 +5,9 @@ class Cmi < Formula
   head "https://github.com/csdms/cmi.git"
   sha1 ""
 
-  depends_on :python
+  option "with-python=", "Path to a python binary" if OS.linux?
+
+  depends_on :python unless OS.linux?
   depends_on "babel"
   depends_on "cca-spec-babel"
   depends_on 'cmake' => :build
@@ -20,10 +22,12 @@ class Cmi < Formula
 
   def install
     ENV.deparallelize
+    ENV.prepend_path 'PATH', File.dirname(which_babel_python)
 
     [ %w{child child},
       %w{cem deltas},
       %w{plume plume},
+      %w{avulsion avulsion},
       %w{waves waves},
       %w{hydrotrend hydrotrend},
       %w{sedflux2d sedflux2d},
@@ -37,11 +41,14 @@ class Cmi < Formula
 
     system "cmake", ".", *std_cmake_args
     system "make", "just_hydrotrend"
-    system "cd csdms && ./configure --prefix=#{prefix}"
-    system "cd csdms && make"
-    system "cd csdms && make install"
+    cd "csdms" do
+      system "./configure --prefix=#{prefix}"
+      system "make"
+      system "make install"
+    end
 
-    inreplace Dir["#{share}/cca/*cca"], /\.la/, ".dylib"
+    inreplace Dir["#{share}/cca/*cca"], /\.la/, ".dylib" if OS.mac?
+    inreplace Dir["#{share}/cca/*cca"], /\.la/, ".so" if OS.linux?
 
     (bin + 'cmi-env').write env_script
   end
@@ -50,6 +57,18 @@ class Cmi < Formula
     %w[Child Hydrotrend Sedflux2d Sedflux3d].each do |component|
       system "eval $(#{bin}/cmi-env) && python -c 'from csdms.model.#{component} import #{component}; #{component}()'"
     end
+  end
+
+  def which_babel_python
+    python = `babel-config --query-var=WHICH_PYTHON`.strip
+    raise "python not found" unless File.exist? python
+    return python
+  end
+
+  def which_python
+    python = ARGV.value('with-python') || which('python').to_s
+    raise "#{python} not found" unless File.exist? python
+    return python
   end
 
   def python_version
