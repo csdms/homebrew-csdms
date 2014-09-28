@@ -12,7 +12,7 @@ class CcaSpecBabel < Formula
   def install
     system "./configure", "--disable-contrib",
       "--with-babel-config=#{HOMEBREW_PREFIX}/bin/babel-config",
-      "--with-libxml2=/usr/local/opt/libxml2",
+      "--with-libxml2=#{HOMEBREW_PREFIX}/opt/libxml2",
       "--prefix=#{prefix}"
 
     system "make", "all"
