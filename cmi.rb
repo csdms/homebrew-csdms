@@ -16,7 +16,7 @@ class Cmi < Formula
   depends_on 'boccatools' => :build
   depends_on 'child'
   depends_on 'sedflux'
-  depends_on 'glib'
+  depends_on 'csdms/dupes/glib'
   depends_on 'hydrotrend'
   depends_on 'cem'
 
