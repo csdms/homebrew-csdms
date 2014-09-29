@@ -9,11 +9,17 @@ class Esmf < Formula
   option "with-check", "Run tests before installing"
 
   depends_on :fortran
+  depends_on "csdms/dupes/netcdf"
 
   def install
     ENV.deparallelize
 
-    ENV['ESMF_CXX'] = "#{ENV.cc}"
+    ENV['ESMF_NETCDF'] = "split"
+    ENV['ESMF_NETCDF_INCLUDE'] = Formula["netcdf"].include
+    ENV['ESMF_NETCDF_LIBPATH'] = Formula["netcdf"].lib
+    ENV['ESMF_NETCDF_LIBS'] = "-lnetcdff -lnetcdf"
+
+    ENV['ESMF_CXX'] = "#{ENV.cxx}"
     ENV['ESMF_F90'] = "#{ENV.fc}"
     ENV['ESMF_COMM'] = "mpiuni"
     ENV['ESMF_DIR'] = buildpath
