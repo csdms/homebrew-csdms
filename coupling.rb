@@ -1,9 +1,5 @@
 require "formula"
 
-# Documentation: https://github.com/Homebrew/homebrew/wiki/Formula-Cookbook
-#                /usr/local/Library/Contributions/example-formula.rb
-# PLEASE REMOVE ALL GENERATED COMMENTS BEFORE SUBMITTING YOUR PULL REQUEST!
-
 class Coupling < Formula
   version "0.1"
   homepage "https://github.com/csdms/coupling"
@@ -11,12 +7,12 @@ class Coupling < Formula
   sha1 ""
 
   option "without-check", "Skip build-time tests (not recommended)"
+  option "with-python=", "Path to a python binary" if OS.linux?
 
-  # depends_on "cmake" => :build
-  depends_on :python
-  depends_on "scipy" => :python
-  depends_on "esmpy"
-  depends_on "netcdf"
+  depends_on :python unless OS.linux?
+  depends_on "scipy" => :python unless OS.linux?
+  depends_on "esmf"
+  depends_on "csdms/dupes/netcdf"
   depends_on "geos"
 
   resource 'nose' do
@@ -40,30 +36,59 @@ class Coupling < Formula
   end
 
   def install
-    # ENV.deparallelize  # if your formula fails when building in parallel
-    #ENV['PYTHONPATH'] = lib + "#{python_version}/site-packages"
+    ENV.prepend_path 'PATH', File.dirname(which_python)
+
     site_packages_suffix = "lib/#{python_version}/site-packages"
     ENV.prepend_create_path "PYTHONPATH", libexec + site_packages_suffix
     ENV.prepend_create_path "PYTHONPATH", prefix + site_packages_suffix
 
-    install_args = ["setup.py", "install", "--prefix=#{libexec}"]
+    install_args = ["setup.py", "install", "--prefix=#{libexec}",
+      "--single-version-externally-managed", "--record=installed.txt"]
 
-    res = %w[nose shapely netcdf pyyaml]
-    res.each do |r|
-      resource(r).stage do
-        system "python", *install_args
-      end
-    end
+    resource('nose').stage do
+      system which_python, *install_args
+    end unless package_installed? which_python, "nose"
 
-    system "#{libexec}/bin/nosetests" if build.with? "check"
+    resource('shapely').stage do
+      system which_python, *install_args
+    end unless package_installed? which_python, "shapely"
 
-    system "python", "setup.py", "install", "--prefix=#{prefix}"
+    resource('pyyaml').stage do
+      system which_python, *install_args
+    end unless package_installed? which_python, "yaml"
+
+    resource('netcdf').stage do
+      ENV["NETCDF4_DIR"] = Formula["netcdf"].prefix
+      ENV["HDF5_DIR"] = Formula["hdf5"].prefix
+      system which_python, *install_args
+    end unless package_installed? which_python, "netCDF4"
+
+    system which_python, "setup.py", "install", "--prefix=#{prefix}"
+
+    ENV.prepend_path "PYTHONPATH", Formula["esmf"].prefix + site_packages_suffix
+    system which_nosetests if build.with? "check"
 
     rm Dir["#{bin}/nosetests*"]
   end
 
   test do
     system "python", "-c", "import cmt"
+  end
+
+  def which_python
+    python = ARGV.value('with-python') || which('python').to_s
+    raise "#{python} not found" unless File.exist? python
+    return python
+  end
+
+  def which_nosetests
+    nosetests = which('nosetests') || python_prefix + '/bin/nosetests'
+    raise "#{nosetests} not found" unless File.exist? nosetests
+    return nosetests
+  end
+
+  def python_prefix
+    `#{which_python} -c 'import sys; print(sys.prefix)'`.strip
   end
 
   def python_version
