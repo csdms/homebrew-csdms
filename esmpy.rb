@@ -1,9 +1,5 @@
 require "formula"
 
-# Documentation: https://github.com/Homebrew/homebrew/wiki/Formula-Cookbook
-#                /usr/local/Library/Contributions/example-formula.rb
-# PLEASE REMOVE ALL GENERATED COMMENTS BEFORE SUBMITTING YOUR PULL REQUEST!
-
 class Esmpy < Formula
   version "6.3.0"
   homepage "http://www.earthsystemmodeling.org"
@@ -11,24 +7,36 @@ class Esmpy < Formula
   sha1 "f459a65373fd5a7925ea935bc75b66283b27936b"
 
   option "with-check", "Run tests before installing"
+  option "with-python=", "Path to a python binary" if OS.linux?
 
-  # depends_on "cmake" => :build
-  depends_on :x11 # if your formula requires any X11/XQuartz components
   depends_on "esmf"
 
   def install
-    #ENV.deparallelize  # if your formula fails when building in parallel
-    compiler = File.basename("#{ENV.fc}") + File.basename("#{ENV.cc}")
+    ENV.prepend_path 'PATH', File.dirname(which_python)
 
     cd "src/addon/ESMPy" do
-      path_to_esmf_mk = "#{HOMEBREW_PREFIX}/lib" +
-        "/libO/Darwin." + compiler + ".64.mpiuni.default/esmf.mk"
-
-      system "python", "setup.py", "build", "--ESMFMKFILE=" + path_to_esmf_mk,
+      system "python", "setup.py", "build", "--ESMFMKFILE=" + which_esmf_mk,
         "install", "--prefix=#{prefix}"
 
       system "python", "setup.py", "test_all" if build.with? "check"
     end
+  end
+
+  def which_python
+    python = ARGV.value('with-python') || which('python').to_s
+    raise "#{python} not found" unless File.exist? python
+    return python
+  end
+
+  def which_esmf_mk
+    compiler = File.basename("#{ENV.fc}")
+    compiler += File.basename("#{ENV.cc}") if OS.mac?
+
+    arch = if OS.mac? then "Darwin" else "Linux" end
+
+    path_to_file = Formula["esmf"].lib + "libO/#{arch}.#{compiler}.64.mpiuni.default/esmf.mk"
+    raise "#{path_to_file} not found" unless File.exist? path_to_file
+    return path_to_file
   end
 
   test do
