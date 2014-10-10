@@ -14,11 +14,11 @@ class Cmi < Formula
   depends_on 'pkg-config' => :build
   depends_on 'bocca' => :build
   depends_on 'boccatools' => :build
-  depends_on 'child'
-  depends_on 'sedflux'
+  depends_on 'csdms/models/child'
+  depends_on 'csdms/models/sedflux'
   depends_on 'csdms/dupes/glib'
-  depends_on 'hydrotrend'
-  depends_on 'cem'
+  depends_on 'csdms/models/hydrotrend'
+  depends_on 'csdms/models/cem'
 
   def install
     ENV.deparallelize
