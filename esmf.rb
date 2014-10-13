@@ -11,7 +11,8 @@ class Esmf < Formula
   option "with-python=", "Path to a python binary" if OS.linux?
 
   depends_on :fortran
-  depends_on "csdms/dupes/netcdf"
+  depends_on "netcdf" unless OS.linux?
+  depends_on "csdms/dupes/netcdf" if OS.linux?
 
   def install
     ENV.deparallelize
