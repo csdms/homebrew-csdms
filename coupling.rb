@@ -7,7 +7,7 @@ class Coupling < Formula
   sha1 ""
 
   option "without-check", "Skip build-time tests (not recommended)"
-  option "with-python=", "Path to a python binary" if OS.linux?
+  option "with-python=", "Path to a python binary"
 
   depends_on :python unless OS.linux?
   depends_on "scipy" => :python unless OS.linux?
