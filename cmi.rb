@@ -16,7 +16,8 @@ class Cmi < Formula
   depends_on 'boccatools' => :build
   depends_on 'csdms/models/child'
   depends_on 'csdms/models/sedflux'
-  depends_on 'csdms/dupes/glib'
+  depends_on 'csdms/dupes/glib' if OS.linux?
+  depends_on 'glib' if OS.mac?
   depends_on 'csdms/models/hydrotrend'
   depends_on 'csdms/models/cem'
 

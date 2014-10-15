@@ -12,7 +12,7 @@ class Esmf < Formula
 
   depends_on :fortran
   depends_on "csdms/dupes/netcdf" if OS.linux?
-  depends_on "homebrew/science/netcdf" if OS.mac?
+  depends_on "homebrew/science/netcdf" unless OS.linux?
 
   def install
     ENV.deparallelize

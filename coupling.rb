@@ -12,7 +12,8 @@ class Coupling < Formula
   depends_on :python unless OS.linux?
   depends_on "scipy" => :python unless OS.linux?
   depends_on "esmf"
-  depends_on "csdms/dupes/netcdf"
+  depends_on "netcdf" unless OS.linux?
+  depends_on "csdms/dupes/netcdf" if OS.linux?
   depends_on "geos"
 
   resource 'nose' do
