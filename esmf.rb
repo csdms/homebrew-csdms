@@ -4,7 +4,7 @@ class Esmf < Formula
   version "6.3.0"
   homepage "http://www.earthsystemmodeling.org"
   url "http://sourceforge.net/projects/esmf/files/latest/download?source=directory"
-  sha1 "f47d9c00553bc560bfc76b0cdb198e5b"
+  sha1 "4be4689316602e1baeebaf018887e3b8d46c88eb"
 
   option "with-check", "Run tests before installing"
   option "enable-esmpy", "Build ESMPy"
