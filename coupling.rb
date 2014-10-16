@@ -10,7 +10,6 @@ class Coupling < Formula
   option "with-python=", "Path to a python binary"
 
   depends_on :python unless OS.linux?
-  depends_on "scipy" => :python unless OS.linux?
   depends_on "csdms/tools/esmpy"
   depends_on "homebrew/science/netcdf" unless OS.linux?
   depends_on "csdms/dupes/netcdf" if OS.linux?
