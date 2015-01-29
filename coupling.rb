@@ -7,12 +7,11 @@ class Coupling < Formula
   sha1 ""
 
   option "without-check", "Skip build-time tests (not recommended)"
-  option "with-python=", "Path to a python binary" if OS.linux?
+  option "with-python=", "Path to a python binary"
 
   depends_on :python unless OS.linux?
-  depends_on "scipy" => :python unless OS.linux?
-  depends_on "esmf"
-  depends_on "netcdf" unless OS.linux?
+  depends_on "csdms/tools/esmpy"
+  depends_on "homebrew/science/netcdf" unless OS.linux?
   depends_on "csdms/dupes/netcdf" if OS.linux?
   depends_on "geos"
 
@@ -43,8 +42,7 @@ class Coupling < Formula
     ENV.prepend_create_path "PYTHONPATH", libexec + site_packages_suffix
     ENV.prepend_create_path "PYTHONPATH", prefix + site_packages_suffix
 
-    install_args = ["setup.py", "install", "--prefix=#{libexec}",
-      "--single-version-externally-managed", "--record=installed.txt"]
+    install_args = ["setup.py", "install", "--prefix=#{libexec}"]
 
     resource('nose').stage do
       system which_python, *install_args
@@ -66,7 +64,8 @@ class Coupling < Formula
 
     system which_python, "setup.py", "install", "--prefix=#{prefix}"
 
-    ENV.prepend_path "PYTHONPATH", Formula["esmf"].prefix + site_packages_suffix
+    ENV.prepend_path "PYTHONPATH", Formula["esmpy"].prefix + site_packages_suffix
+    ENV.prepend_path 'PATH', "#{libexec}/bin"
     system which_nosetests if build.with? "check"
 
     rm Dir["#{bin}/nosetests*"]

@@ -3,16 +3,16 @@ require "formula"
 class Esmf < Formula
   version "6.3.0"
   homepage "http://www.earthsystemmodeling.org"
-  url "git://git.code.sf.net/p/esmf/esmf", :branch => 'ESMF_6_3_0rp1'
-  sha1 "f459a65373fd5a7925ea935bc75b66283b27936b"
+  url "http://sourceforge.net/projects/esmf/files/latest/download?source=directory"
+  sha1 "4be4689316602e1baeebaf018887e3b8d46c88eb"
 
   option "with-check", "Run tests before installing"
   option "enable-esmpy", "Build ESMPy"
   option "with-python=", "Path to a python binary" if OS.linux?
 
   depends_on :fortran
-  depends_on "netcdf" unless OS.linux?
   depends_on "csdms/dupes/netcdf" if OS.linux?
+  depends_on "homebrew/science/netcdf" unless OS.linux?
 
   def install
     ENV.deparallelize
