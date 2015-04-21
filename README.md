@@ -1,4 +1,4 @@
-homebrew-csdms
+homebrew-tools
 ==============
 
 CSDMS models and tools formulae for the Homebrew package manager
@@ -10,13 +10,13 @@ To install Homebrew,
 
 How do I install these formulae?
 --------------------------------
-Just `brew tap csdms/csdms` and then `brew install <formula>`.
+Just `brew tap csdms/tools` and then `brew install <formula>`.
 
-If the formula conflicts with one from mxcl/master or another tap, you can `brew install csdms/csdms/<formula>`.
+If the formula conflicts with one from mxcl/master or another tap, you can `brew install csdms/tools/<formula>`.
 
 You can also install via URL:
 
-    brew install https://raw.github.com/csdms/homebrew-csdms/master/<formula>.rb
+    brew install https://raw.github.com/csdms/homebrew-tools/master/<formula>.rb
 
 Docs
 ----
