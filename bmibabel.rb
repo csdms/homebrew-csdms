@@ -19,7 +19,8 @@ class Bmibabel < Formula
 
     install_args = ["setup.py", "install", "--prefix=#{libexec}"]
 
-    system which_python, "setup.py", "install", "--prefix=#{prefix}"
+    system which_python, "setup.py", "install", "--prefix=#{prefix}",
+      "--single-version-externally-managed", "--record=installed.txt"
 
     ENV.prepend_path 'PATH', "#{libexec}/bin"
   end
