@@ -3,8 +3,7 @@ require "formula"
 class Boccatools < Formula
   version "0.1"
   homepage "https://csdms.colorado.edu"
-  url "https://csdms.colorado.edu/svn/bocca_tools/trunk",
-    :using => UnsafeSubversionDownloadStrategy
+  url "https://github.com/csdms/bocca-tools", :using => :git
   sha1 ""
 
   option "with-python=", "Path to a python binary" if OS.linux?
