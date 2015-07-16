@@ -12,15 +12,15 @@ class Esmf < Formula
   option "with-python=", "Path to a python binary" if OS.linux?
 
   depends_on :fortran
-  #depends_on "csdms/dupes/netcdf" if OS.linux?
+  depends_on "csdms/dupes/netcdf" if OS.linux?
   depends_on "homebrew/science/netcdf" unless OS.linux?
 
   def install
     ENV.deparallelize
 
     ENV['ESMF_NETCDF'] = "split"
-    ENV['ESMF_NETCDF_INCLUDE'] = Formula["netcdf"].include
-    ENV['ESMF_NETCDF_LIBPATH'] = Formula["netcdf"].lib
+    ENV['ESMF_NETCDF_INCLUDE'] = Formula["csdms/dupes/netcdf"].include
+    ENV['ESMF_NETCDF_LIBPATH'] = Formula["csdms/dupes/netcdf"].lib
     ENV['ESMF_NETCDF_LIBS'] = "-lnetcdff -lnetcdf"
 
     ENV['ESMF_CXX'] = "#{ENV.cxx}"
