@@ -4,8 +4,8 @@ class Esmf < Formula
   version "6.3.0"
   homepage "http://www.earthsystemmodeling.org"
   url "http://sourceforge.net/projects/esmf/files/latest/download?source=directory"
-  #sha1 "4be4689316602e1baeebaf018887e3b8d46c88eb"
-  sha1 "ea60df615387f47bdfdfe4da48f6567c4ec60f74"
+  sha1 "4be4689316602e1baeebaf018887e3b8d46c88eb"
+  #sha1 "ea60df615387f47bdfdfe4da48f6567c4ec60f74"
 
   option "with-check", "Run tests before installing"
   option "enable-esmpy", "Build ESMPy"
@@ -19,8 +19,8 @@ class Esmf < Formula
     ENV.deparallelize
 
     ENV['ESMF_NETCDF'] = "split"
-    ENV['ESMF_NETCDF_INCLUDE'] = Formula["csdms/dupes/netcdf"].include
-    ENV['ESMF_NETCDF_LIBPATH'] = Formula["csdms/dupes/netcdf"].lib
+    ENV['ESMF_NETCDF_INCLUDE'] = Formula["netcdf"].include
+    ENV['ESMF_NETCDF_LIBPATH'] = Formula["netcdf"].lib
     ENV['ESMF_NETCDF_LIBS'] = "-lnetcdff -lnetcdf"
 
     ENV['ESMF_CXX'] = "#{ENV.cxx}"
