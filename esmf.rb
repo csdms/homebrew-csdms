@@ -18,9 +18,12 @@ class Esmf < Formula
   def install
     ENV.deparallelize
 
+    netcdf = "csdms/dupes/netcdf" if OS.linux?
+    netcdf = "homebrew/science/netcdf" unless OS.linux?
+
     ENV['ESMF_NETCDF'] = "split"
-    ENV['ESMF_NETCDF_INCLUDE'] = Formula["netcdf"].include
-    ENV['ESMF_NETCDF_LIBPATH'] = Formula["netcdf"].lib
+    ENV['ESMF_NETCDF_INCLUDE'] = Formula[netcdf].include
+    ENV['ESMF_NETCDF_LIBPATH'] = Formula[netcdf].lib
     ENV['ESMF_NETCDF_LIBS'] = "-lnetcdff -lnetcdf"
 
     ENV['ESMF_CXX'] = "#{ENV.cxx}"
