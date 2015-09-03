@@ -35,6 +35,11 @@ class Babel < Formula
 
     rm Dir["#{share}/aclocal/libtool.m4"]
     rm Dir["#{share}/aclocal/ltdl.m4"]
+
+    rm Dir["#{include}/c"]
+    include_target = include + "c"
+    include_target.mkpath
+    Dir.glob("#{include}/*.h") { |file| cp file, include_target }
   end
 
   test do
